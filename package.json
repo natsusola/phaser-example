@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev:1": "PROJECT=sample_1 ./node_modules/.bin/webpack-dev-server --color --progress",
-    "pro:1": "PROJECT=sample_1 NODE_ENV=production ./node_modules/.bin/webpack --color --progress"
+    "pro:1": "PROJECT=sample_1 NODE_ENV=production ./node_modules/.bin/webpack --color --progress",
+    "dev:2": "PROJECT=sample_2 ./node_modules/.bin/webpack-dev-server --color --progress",
+    "pro:2": "PROJECT=sample_2 NODE_ENV=production ./node_modules/.bin/webpack --color --progress"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "express": "^4.16.2",
     "phaser-ce": "^2.10.0"
   }
 }

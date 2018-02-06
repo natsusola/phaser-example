@@ -8,6 +8,7 @@ const __DEV__ = process.env.NODE_ENV !== 'production';
 let config = {
   entry: {
     app: path.resolve(__dirname, `${__PROJECT__}/src/js/index.js`),
+    utils: [ './utils' ]
     // vendors: [
     //   'phaser-ce/build/custom/pixi.js',
     //   'phaser-ce/build/custom/p2.js',
@@ -33,22 +34,25 @@ let config = {
         test: /\.(png|jpg)$/,
         use: {
           loader: 'file-loader',
-          options: {
-
-          }
+          options: {}
         }
       }
     ]
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, `${__PROJECT__}/src`),
+    },
   },
   devServer: {
     contentBase: path.join(__dirname, `${__PROJECT__}/dist`)
   },
   devtool: __DEV__ ? 'source-map' : '',
   plugins: [
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   names: ['vendors'],
-    //   filename: `[name].js?${__DEV__ ? '' : '[chunkhash:8]'}`
-    // }),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['utils'],
+      filename: `[name].js?${__DEV__ ? '' : '[chunkhash:8]'}`
+    }),
     new HtmlPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, `${__PROJECT__}/src/index.html`)
