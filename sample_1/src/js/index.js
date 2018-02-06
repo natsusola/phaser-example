@@ -31,7 +31,6 @@ function create() {
   ball = game.add.sprite(game.world.width * 0.5, game.world.height - 35, 'ball');
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   ball.anchor.set(0.5);
-  // ball.body.velocity.set(250, -250);
   ball.body.collideWorldBounds = true;
   ball.body.bounce.set(1);
   ball.checkWorldBounds = true;
@@ -66,14 +65,14 @@ function initBricks() {
   brickInfo = {
     width: 50,
     height: 20,
-    count: { row: 7, col: 3 },
+    count: { row: 4, col: 12 },
     offset: { top: 50, left: 60 },
     padding: 10
   };
 
   bricks = game.add.group();
-  for (let i = 0; i < brickInfo.count.row; i++) {
-    for (let j = 0; j < brickInfo.count.col; j++) {
+  for (let i = 0; i < brickInfo.count.col; i++) {
+    for (let j = 0; j < brickInfo.count.row; j++) {
       let _bx = i * (brickInfo.width + brickInfo.padding) + brickInfo.offset.left;
       let _by = j * (brickInfo.height + brickInfo.padding) + brickInfo.offset.left;
       newBrick = game.add.sprite(_bx, _by, 'brick');
@@ -88,7 +87,6 @@ function initBricks() {
 /* -----------  Hit Functions  ----------- */
 
 function ballHitPaddle(ball, paddle) {
-  log(paddle.x, ball.x, -1 * 5 * (paddle.x - ball.x));
   ball.body.velocity.x = -1 * 5 * (paddle.x - ball.x);
 }
 
