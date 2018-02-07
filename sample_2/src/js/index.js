@@ -4,6 +4,7 @@ let game = new Phaser.Game(800, 600, Phaser.AUTO, null, {
 
 let player, platforms;
 let cursors;
+let zKey;
 // let heroJson = require('@/assets/hero.json');
 // log(heroJson);
 
@@ -28,10 +29,13 @@ function create() {
   player.animations.add('stand', Phaser.Animation.generateFrameNames('stand_0', 1, 2, '.png'), 3, this);
   player.animations.add('walk', Phaser.Animation.generateFrameNames('walk_0', 1, 3, '.png'), 9, this);
   player.animations.add('jump', Phaser.Animation.generateFrameNames('jump_0', 1, 2, '.png'), 1, this);
+  player.animations.add('attack1', Phaser.Animation.generateFrameNames('attack1_0', 1, 2, '.png'), 10, this);
+  player.animations.add('attack2', Phaser.Animation.generateFrameNames('attack2_0', 1, 2, '.png'), 1, this);
 
   player.body.velocity.y = 200;
   player.gameStatus = {
-    jumpTimer: 0
+    jumpTimer: 0,
+    attack1Timer: 0,
   };
 
   platforms = game.add.group();
@@ -43,17 +47,19 @@ function create() {
   platforms.create(650, 500, 'ground');
   platforms.setAll('body.immovable', true);
   cursors = game.input.keyboard.createCursorKeys();
+  zKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 }
 
 function update() {
 
-  // player.body.setSize(player.width, player.height);
+  player.body.setSize(player.width * player.scale.x, player.height);
   game.physics.arcade.collide(player, platforms);
   player.body.velocity.x = 0;
 
-  // player.frame = 6;
 
-  if (cursors.left.isDown) {
+  if (zKey.isDown) {
+    player.animations.play('attack1')
+  } else if (cursors.left.isDown) {
     player.scale.x = -1;
     player.body.velocity.x = -200;
     if (player.body.touching.down) player.animations.play('walk');
@@ -88,7 +94,7 @@ function update() {
 
   game.debug.spriteInfo(player, 32, 32);
   game.debug.body(player);
-  game.debug.spriteBounds(player, "green", false);
+  game.debug.spriteBounds(player, 'green', false);
 
 }
 
