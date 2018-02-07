@@ -1,9 +1,11 @@
 let game = new Phaser.Game(800, 600, Phaser.AUTO, null, {
-  preload, create, update
+  preload, create, update,
 });
 
 let player, platforms;
 let cursors;
+// let heroJson = require('@/assets/hero.json');
+// log(heroJson);
 
 function preload() {
   game.scale.pageAlignVertically = true;
@@ -12,19 +14,21 @@ function preload() {
 
   game.load.image('ground', require('@/assets/platform.png'));
   game.load.spritesheet('player', require('@/assets/player.png'), 50, 100);
+  game.load.atlas('hero', require('@/assets/hero.png'), require('@/assets/hero.json'), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 }
 
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  player = game.add.sprite(0, game.world.height - 150, 'player');
+  player = game.add.sprite(0, game.world.height - 150, 'hero');
   player.anchor.set(0.5);
   game.physics.enable(player, Phaser.Physics.ARCADE);
-  player.body.gravity.y = 1000;
+  player.body.gravity.y = 3000;
   player.body.collideWorldBounds = true;
-  player.animations.add('stand', [0, 1], 3, this);
-  player.animations.add('walk', [2, 3, 4, 3], 9, this);
-  player.animations.add('jump', [5, 6], 10, this);
+  player.animations.add('stand', Phaser.Animation.generateFrameNames('stand_0', 1, 2, '.png'), 3, this);
+  player.animations.add('walk', Phaser.Animation.generateFrameNames('walk_0', 1, 3, '.png'), 9, this);
+  player.animations.add('jump', Phaser.Animation.generateFrameNames('jump_0', 1, 2, '.png'), 1, this);
+
   player.body.velocity.y = 200;
   player.gameStatus = {
     jumpTimer: 0
@@ -42,13 +46,17 @@ function create() {
 }
 
 function update() {
+
+  // player.body.setSize(player.width, player.height);
   game.physics.arcade.collide(player, platforms);
   player.body.velocity.x = 0;
+
+  // player.frame = 6;
 
   if (cursors.left.isDown) {
     player.scale.x = -1;
     player.body.velocity.x = -200;
-    if (player.body.touching.down) player.animations.play('walk')
+    if (player.body.touching.down) player.animations.play('walk');
   } else if (cursors.right.isDown) {
     player.scale.x = 1;
     player.body.velocity.x = 200;
@@ -58,20 +66,32 @@ function update() {
   }
 
   if (cursors.up.isDown && player.body.touching.down) {
-    player.body.velocity.y = -200;
+    player.body.velocity.y = -300;
     player.gameStatus.jumpTimer = 1;
     player.animations.play('jump', 2, false);
   } else if (cursors.up.isDown && player.gameStatus.jumpTimer !== 0) {
     if (player.gameStatus.jumpTimer > 20) {
       player.gameStatus.jumpTimer = 0;
+    } else if (player.gameStatus.jumpTimer > 0 && player.gameStatus.jumpTimer < 10) {
+      player.gameStatus.jumpTimer++;
+      player.body.velocity.y = -400;
     } else {
       player.gameStatus.jumpTimer++;
-      player.body.velocity.y = -250;
+      player.body.velocity.y = -350;
     }
   } else { player.gameStatus.jumpTimer = 0; }
 
   if (!player.body.touching.down) {
-    player.frame = 6;
+    // player.animations.play('jumping')
+    player.frameName = 'jump_02.png';
   }
+
+  game.debug.spriteInfo(player, 32, 32);
+  game.debug.body(player);
+  game.debug.spriteBounds(player, "green", false);
+
+}
+
+function render() {
 
 }

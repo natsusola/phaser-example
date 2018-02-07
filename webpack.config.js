@@ -31,7 +31,7 @@ let config = {
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
-        test: /\.(png|jpg)$/,
+        test: /\.(png|jpg|json)$/,
         use: {
           loader: 'file-loader',
           options: {}
