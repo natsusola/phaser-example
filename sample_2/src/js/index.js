@@ -20,23 +20,24 @@ function preload() {
 
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
+  // game.time.desiredFps = 10;
 
   player = game.add.sprite(0, game.world.height - 150, 'hero');
   player.anchor.set(0, 1);
   game.physics.enable(player, Phaser.Physics.ARCADE);
   player.body.gravity.y = 3000;
   player.body.collideWorldBounds = true;
-  // player.body.linearDamping = 1;
-  player.animations.add('stand', Phaser.Animation.generateFrameNames('stand_0', 1, 2, '.png'), 3, this);
-  player.animations.add('walk', Phaser.Animation.generateFrameNames('walk_0', 1, 3, '.png'), 9, this);
-  player.animations.add('jump', Phaser.Animation.generateFrameNames('jump_0', 1, 2, '.png'), 1, this);
-  player.animations.add('attack1', Phaser.Animation.generateFrameNames('attack1_0', 1, 2, '.png'), 10, this);
-  player.animations.add('attack2', Phaser.Animation.generateFrameNames('attack2_0', 1, 2, '.png'), 1, this);
+  player.animations.add('stand', Phaser.Animation.generateFrameNames('stand_0', 1, 2, '.png'), 3, true);
+  player.animations.add('walk', Phaser.Animation.generateFrameNames('walk_0', 1, 3, '.png'), 9, true);
+  player.animations.add('jump', Phaser.Animation.generateFrameNames('jump_0', 1, 2, '.png'), 1, true);
+  player.animations.add('attack1', Phaser.Animation.generateFrameNames('attack1_0', 1, 2, '.png'), 1, true);
+  player.animations.add('attack2', Phaser.Animation.generateFrameNames('attack2_0', 1, 2, '.png'), 1, false);
 
   player.body.velocity.y = 200;
   player.gameStatus = {
     jumpTimer: 0,
     attack1Timer: 0,
+    state: 'stand'
   };
 
   platforms = game.add.group();
@@ -56,10 +57,17 @@ function update() {
   player.body.setSize(player.width * player.scale.x, player.height);
   game.physics.arcade.collide(player, platforms);
   player.body.velocity.x = 0;
-  
+  // player.gameStatus.state = 'stand';
 
-  if (zKey.isDown) {
-    player.animations.play('attack1')
+  // player.gameStatus.attack1Timer = player.gameStatus.attack1Timer > 0 ? player.gameStatus.attack1Timer - 1 : 0;
+
+  if (zKey.isDown && player.gameStatus.state !== 'attack1') {
+    player.gameStatus.state = 'attack1';
+    player.animations.play('attack1');
+    game.time.events.add(300, () => {
+      player.animations.stop(null, true);
+      log(123);
+    }, this);
   } else if (cursors.left.isDown) {
     if (player.scale.x === 1) player.x += player.width;
     player.scale.x = -1;
