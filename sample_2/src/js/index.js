@@ -4,7 +4,7 @@ let game = new Phaser.Game(800, 600, Phaser.AUTO, null, {
 
 let player, platforms;
 let cursors;
-let zKey;
+let zKey, xKey;
 // let heroJson = require('@/assets/hero.json');
 // log(heroJson);
 
@@ -30,8 +30,8 @@ function create() {
   player.animations.add('stand', Phaser.Animation.generateFrameNames('stand_0', 1, 2, '.png'), 3, true);
   player.animations.add('walk', Phaser.Animation.generateFrameNames('walk_0', 1, 3, '.png'), 9, true);
   player.animations.add('jump', Phaser.Animation.generateFrameNames('jump_0', 1, 2, '.png'), 1, true);
-  player.animations.add('attack1', Phaser.Animation.generateFrameNames('attack1_0', 1, 2, '.png'), 1, true);
-  player.animations.add('attack2', Phaser.Animation.generateFrameNames('attack2_0', 1, 2, '.png'), 1, false);
+  player.animations.add('attack1', Phaser.Animation.generateFrameNames('attack1_0', 1, 2, '.png'), 5, false);
+  player.animations.add('attack2', Phaser.Animation.generateFrameNames('attack2_0', 1, 2, '.png'), 5, false);
 
   player.body.velocity.y = 200;
   player.gameStatus = {
@@ -50,6 +50,7 @@ function create() {
   platforms.setAll('body.immovable', true);
   cursors = game.input.keyboard.createCursorKeys();
   zKey = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+  xKey = game.input.keyboard.addKey(Phaser.Keyboard.X);
 }
 
 function update() {
@@ -64,10 +65,11 @@ function update() {
   if (zKey.isDown && player.gameStatus.state !== 'attack1') {
     player.gameStatus.state = 'attack1';
     player.animations.play('attack1');
-    game.time.events.add(300, () => {
-      player.animations.stop(null, true);
-      log(123);
-    }, this);
+    player.gameStatus.state = 'stand';
+  } else if (xKey.isDown && player.gameStatus.state !== 'attack2') {
+    player.gameStatus.state = 'attack2';
+    player.animations.play('attack2');
+    player.gameStatus.state = 'stand';
   } else if (cursors.left.isDown) {
     if (player.scale.x === 1) player.x += player.width;
     player.scale.x = -1;
